@@ -1,3 +1,5 @@
+import { UnknownOutputParams } from "expo-router";
+
 declare interface TabIconProps {
   icon: ImageSourcePropType | undefined;
   color: string;
@@ -10,14 +12,24 @@ declare interface CustomButtonProps {
   handlePress: (event: GestureResponderEvent) => void;
   containerStyles: string;
   textStyles?: string;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 declare interface FormFieldProps {
-  title: string;
-  value: string;
+  title?: string;
+  value?: string;
   placeholder?: string;
-  handleChangeText: (e) => void;
-  otherStyles: string;
+  handleChangeText?: (e) => void;
+  otherStyles?: string;
   keyboardType?: string;
+  initialQuery?: any;
+}
+
+declare interface TrendingProps {
+  posts: any;
+}
+
+declare interface EmptyStateProps {
+  title: string;
+  subtitle: string;
 }

@@ -1,3 +1,4 @@
+import { UnknownOutputParams } from "expo-router";
 import { Client, Account, ID, Avatars, Databases, Query } from "react-native-appwrite";
 export const config = {
   endpoint: "https://cloud.appwrite.io/v1",
@@ -22,7 +23,7 @@ client
 const account = new Account(client);
 const avatars = new Avatars(client);
 const databases = new Databases(client);
-export const createUser = async (email, password, username) => {
+export const createUser = async (email: string, password: string, username: string | undefined) => {
    try {
     const newAccount = await account.create(
       ID.unique(),
@@ -46,17 +47,16 @@ export const createUser = async (email, password, username) => {
       }
     )
     return newUser;
-   } catch (error) {
-    console.log(error);
+   } catch (error: any) {
     throw new Error(error);
    }
 }
 
-export async function signIn(email, password) {
+export async function signIn(email: string, password: string) {
   try {
     const session = await account.createEmailPasswordSession(email, password);
     return session;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error);
   }
 }
@@ -79,3 +79,41 @@ export const getCurrentUser = async () => {
     console.log(error);
   }
 }
+
+export const getAllPosts = async () => {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId
+    )
+    return posts.documents;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export const getLatestPosts = async () => {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.orderDesc("$createdAt"), Query.limit(7)]
+    );
+    return posts.documents;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export const searchPosts = async (query: any) => {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.search('title', query)]
+    );
+    return posts.documents;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
