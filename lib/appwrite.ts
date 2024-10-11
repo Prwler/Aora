@@ -105,15 +105,38 @@ export const getLatestPosts = async () => {
   }
 }
 
-export const searchPosts = async (query: any) => {
+// export const searchPosts = async (query: any) => {
+//   try {
+//     const posts = await databases.listDocuments(
+//       config.databaseId,
+//       config.videoCollectionId,
+//       [Query.search('title', query)]
+//     );
+//     return posts.documents;
+//   } catch (error: any) {
+//     throw new Error(error);
+//   }
+// };
+export const searchPosts = async (searchTerm: string) => {
   try {
     const posts = await databases.listDocuments(
       config.databaseId,
       config.videoCollectionId,
-      [Query.search('title', query)]
+      [Query.search("title", searchTerm)]
     );
+     //console.log("Search response:", posts);
+     if (posts.documents.length === 0) {
+       console.log("No documents found matching the search term");
+     }
     return posts.documents;
   } catch (error: any) {
-    throw new Error(error);
+    console.error("Error in searchPosts:", error);
+    if (error.message.includes("requires a fulltext index")) {
+      console.warn(
+        "Fulltext index not set up for 'title'. Returning empty results."
+      );
+      return [];
+    }
+    throw error; // Re-throw other errors
   }
 };
